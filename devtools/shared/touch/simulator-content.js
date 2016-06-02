@@ -334,11 +334,13 @@ var simulator = {
     let savedMetaViewportEnabled =
       Services.prefs.getBoolPref("dom.meta-viewport.enabled");
     if (!savedMetaViewportEnabled) {
+      dump('getDelayBeforeMouseEvent: viewport not enable, delay 300ms\n');
       return 300;
     }
 
     let content = this.getContent(evt.target);
     if (!content) {
+      dump('getDelayBeforeMouseEvent: no content, delay 0ms\n');
       return 0;
     }
 
@@ -362,8 +364,10 @@ var simulator = {
         minZoom.value === maxZoom.value ||    // minimum-scale = maximum-scale
         autoSize.value                        // width = device-width
     ) {
+      dump('getDelayBeforeMouseEvent: delay 0ms\n');
       return 0;
     } else {
+      dump('getDelayBeforeMouseEvent: delay 300ms\n');
       return 300;
     }
   }
