@@ -214,7 +214,10 @@ var simulator = {
           return;
         }
 
-        content.setTimeout(function dispatchMouseEvents(self) {
+        let timeoutStartTime = new Date().getTime();
+        let timeoutID = content.setTimeout(function dispatchMouseEvents(self) {
+          let timeoutEndTime = new Date().getTime();
+          dump(`setTimeout end, id: ${timeoutID}, time: ${timeoutEndTime}, duration: ${timeoutEndTime - timeoutStartTime}\n`);
           try {
             self.fireMouseEvent("mousedown", evt);
             self.fireMouseEvent("mousemove", evt);
@@ -223,6 +226,7 @@ var simulator = {
             console.error("Exception in touch event helper: " + e);
           }
         }, this.getDelayBeforeMouseEvent(evt), this);
+        dump(`setTimeout start, id: ${timeoutID}, time: ${timeoutStartTime}\n`);
         return;
     }
 
@@ -238,6 +242,7 @@ var simulator = {
   },
 
   fireMouseEvent(type, evt) {
+    dump(`fireMouseEvent, type: ${type}, time: ${new Date().getTime()}\n`);
     let content = this.getContent(evt.target);
     let utils = content.QueryInterface(Ci.nsIInterfaceRequestor)
                        .getInterface(Ci.nsIDOMWindowUtils);
@@ -262,6 +267,7 @@ var simulator = {
   },
 
   sendTouchEvent(evt, target, name) {
+    dump(`sendTouchEvent, type: ${name}, time: ${new Date().getTime()}\n`);
     function clone(obj) {
       return Cu.cloneInto(obj, target);
     }
