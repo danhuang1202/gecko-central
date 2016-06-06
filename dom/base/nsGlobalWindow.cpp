@@ -12104,6 +12104,12 @@ nsGlobalWindow::SetTimeoutOrInterval(nsIScriptTimeoutHandler *aHandler,
     // create a timer and fire it off.
 
     timeout->mWhen = TimeStamp::Now() + delta;
+    if (realInterval == 300) {
+      TimeStamp ts_now = timeout->mWhen - delta;
+      TimeStamp ts_zero;
+      TimeDuration td_now = ts_now - ts_zero;
+      printf("nsGlobalWindow::SetTimeoutOrInterval, id: %d, now: %f\n", (mTimeoutPublicIdCounter+1), td_now.ToMilliseconds());
+    }
 
     nsresult rv;
     timeout->mTimer = do_CreateInstance("@mozilla.org/timer;1", &rv);
@@ -12283,6 +12289,12 @@ nsGlobalWindow::RunTimeoutHandler(nsTimeout* aTimeout,
       abortIntervalHandler = true;
     }
   } else {
+    if (timeout->mInterval == 300) {
+      TimeStamp ts_now = TimeStamp::Now();
+      TimeStamp ts_zero;
+      TimeDuration td_now = ts_now - ts_zero;
+      printf("nsGlobalWindow::RunTimeoutHandler, id: %d, now: %f\n", timeout->mPublicId, td_now.ToMilliseconds());
+    }
     // Hold strong ref to ourselves while we call the callback.
     nsCOMPtr<nsISupports> me(static_cast<nsIDOMWindow *>(this));
     ErrorResult rv;
